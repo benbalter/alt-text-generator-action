@@ -46,17 +46,33 @@ export class Issue {
   }
 
   async imageBase64(url: string) {
-    const response = await fetch(url);
-    const buffer = Buffer.from(await response.arrayBuffer());
-    const type = await imageType(buffer);
-    const base64 = buffer.toString("base64");
+    try {
+      const response = await fetch(url);
 
-    if (!type) {
-      core.error(`Could not determine image type of ${url}`);
-      return;
+      if (!response.ok) {
+        core.error(`Failed to fetch image from ${url}. Status: ${response.status}`);
+        return;
+      }
+
+      const buffer = Buffer.from(await response.arrayBuffer());
+
+      if (buffer.length === 0) {
+        core.error(`Fetched data from ${url} is empty.`);
+        return;
+      }
+
+      const type = await imageType(buffer);
+
+      if (!type) {
+        core.error(`Could not determine image type of ${url}.`);
+        return;
+      }
+
+      const base64 = buffer.toString("base64");
+      return `data:${type.mime};base64,${base64}`;
+    } catch (error) {
+      core.error(`Error fetching or processing image from ${url}: ${error.message}`);
     }
-
-    return `data:${type.mime};base64,${base64}`;
   }
 
   async updateBody() {
