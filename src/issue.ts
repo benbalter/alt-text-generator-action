@@ -35,8 +35,8 @@ export class Issue {
 
     const images = Array.from(matches).map((match) => {
       core.info(`Match: ${JSON.stringify(match)}`);
-      const url = match[1];
-      const altText = match[2];
+      const altText = match[1];
+      const url = match[2];
       return { url, altText };
     });
 
