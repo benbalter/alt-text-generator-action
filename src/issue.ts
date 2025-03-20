@@ -47,8 +47,7 @@ export class Issue {
 
   async imageBase64(url: string) {
     const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = <Buffer>arrayBuffer;
+    const buffer = Buffer.from(await response.arrayBuffer());
     const type = await imageType(buffer);
     const base64 = buffer.toString("base64");
 
