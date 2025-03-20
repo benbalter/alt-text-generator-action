@@ -55,13 +55,14 @@ class Issue {
             core.error("Could not get issue body.");
             return [];
         }
-        const matches = imageRegex.exec(body);
+        const matches = body.matchAll(imageRegex);
         if (!matches) {
             core.info("No images in issue body.");
             return [];
         }
         core.debug(`Matches: ${JSON.stringify(matches)}`);
-        const images = matches.map((match) => {
+        const images = Array.from(matches).map((match) => {
+            core.info(`Match: ${JSON.stringify(match)}`);
             const url = match[1];
             const altText = match[2];
             return { url, altText };
