@@ -1,0 +1,9 @@
+name: "Issue Commenter"
+description: "Adds alt text to images in issue comments"
+inputs:
+  github_token:
+    description: "GitHub token for authentication"
+    required: true
+runs:
+  using: "node16"
+  main: "dist/index.js"

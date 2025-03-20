@@ -1,0 +1,31 @@
+{
+  "name": "alt-text-generator-action",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "tsc && ncc build dist/index.js -o dist",
+    "start": "node dist/index.js",
+    "format": "eslint . --fix && prettier --write .",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@types/node": "^22.13.10",
+    "dotenv": "^16.4.7",
+    "openai": "^4.87.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/jest": "^29.5.14",
+    "@vercel/ncc": "^0.38.3",
+    "eslint": "^9.22.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.5.3",
+    "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1"
+  }
+}
