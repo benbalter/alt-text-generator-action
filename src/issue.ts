@@ -31,6 +31,8 @@ export class Issue {
       return [];
     }
 
+    core.debug(`Matches: ${JSON.stringify(matches)}`);
+
     const images = matches.map((match) => {
       const url = match[1];
       const altText = match[2];
@@ -74,7 +76,7 @@ export class Issue {
 
   async insertAltText() {
     const images = this.getImages();
-    
+
     if (!this.data || !this.data.body) {
       core.setFailed("No issue data found.");
       return;

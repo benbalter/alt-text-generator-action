@@ -60,6 +60,7 @@ class Issue {
             core.info("No images in issue body.");
             return [];
         }
+        core.debug(`Matches: ${JSON.stringify(matches)}`);
         const images = matches.map((match) => {
             const url = match[1];
             const altText = match[2];
