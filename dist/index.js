@@ -125,17 +125,21 @@ class Issue {
     getImages() {
         const body = this.data?.body;
         if (!body) {
+            core.error("Could not get issue body.");
             return [];
         }
         const matches = imageRegex.exec(body);
         if (!matches) {
+            core.info("No images in issue body.");
             return [];
         }
-        return matches.map((match) => {
+        const images = matches.map((match) => {
             const url = match[1];
             const altText = match[2];
             return { url, altText };
         });
+        core.info(`Found images: ${JSON.stringify(images)}`);
+        return images;
     }
     async imageBase64(url) {
         const response = await fetch(url);
@@ -163,10 +167,6 @@ class Issue {
     }
     async insertAltText() {
         const images = this.getImages();
-        if (images.length === 0) {
-            core.info("No images found in the issue body.");
-            return;
-        }
         if (!this.data || !this.data.body) {
             core.setFailed("No issue data found.");
             return;
