@@ -33,7 +33,6 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv/config");
 const issue_1 = require("./issue");
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));

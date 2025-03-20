@@ -7,7 +7,7 @@ permissions:
   issues: write
   contents: read
   models: read
-  
+
 jobs:
   Alt-Text:
     runs-on: ubuntu-latest

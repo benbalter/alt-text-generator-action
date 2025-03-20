@@ -3,6 +3,7 @@ import { WebhookPayload } from "@actions/github/lib/interfaces";
 import * as core from "@actions/core";
 import { generateAltText } from "./openai";
 import { Context } from "@actions/github/lib/context";
+import imageType from "image-type";
 
 export const token = core.getInput("GITHUB_TOKEN", { required: true });
 export const octokit = github.getOctokit(token);
@@ -36,10 +37,18 @@ export class Issue {
   }
 
   async imageBase64(url: string) {
-    const buffer = await fetch(url);
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = <Buffer>arrayBuffer;
+    const type = await imageType(buffer);
     const base64 = buffer.toString("base64");
-    const imageFormat = url.split(".").pop();
-    return `data:image/${imageFormat};base64,${base64}`;
+
+    if (!type) {
+      core.error(`Could not determine image type of ${url}`);
+      return;
+    }
+
+    return `data:${type.mime};base64,${base64}`;
   }
 
   async updateBody() {
@@ -72,6 +81,11 @@ export class Issue {
     for (const image of images) {
       core.info(`Processing image: ${image.url}`);
       const base64data = await this.imageBase64(image.url);
+
+      if (!base64data) {
+        continue;
+      }
+
       const altText = await generateAltText(base64data);
 
       if (!altText) {

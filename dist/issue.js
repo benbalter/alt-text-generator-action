@@ -32,11 +32,15 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Issue = exports.octokit = exports.token = void 0;
 const github = __importStar(require("@actions/github"));
 const core = __importStar(require("@actions/core"));
 const openai_1 = require("./openai");
+const image_type_1 = __importDefault(require("image-type"));
 exports.token = core.getInput("GITHUB_TOKEN", { required: true });
 exports.octokit = github.getOctokit(exports.token);
 const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
@@ -61,10 +65,16 @@ class Issue {
         });
     }
     async imageBase64(url) {
-        const buffer = await fetch(url);
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = arrayBuffer;
+        const type = await (0, image_type_1.default)(buffer);
         const base64 = buffer.toString("base64");
-        const imageFormat = url.split(".").pop();
-        return `data:image/${imageFormat};base64,${base64}`;
+        if (!type) {
+            core.error(`Could not determine image type of ${url}`);
+            return;
+        }
+        return `data:${type.mime};base64,${base64}`;
     }
     async updateBody() {
         if (!this.data || !this.data.body) {
@@ -91,6 +101,9 @@ class Issue {
         for (const image of images) {
             core.info(`Processing image: ${image.url}`);
             const base64data = await this.imageBase64(image.url);
+            if (!base64data) {
+                continue;
+            }
             const altText = await (0, openai_1.generateAltText)(base64data);
             if (!altText) {
                 core.error("No alt text generated.");

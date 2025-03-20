@@ -60,7 +60,7 @@ async function generateAltText(base64data) {
                         type: "image_url",
                         image_url: {
                             url: base64data,
-                            details: "high",
+                            detail: "high",
                         },
                     },
                 ],

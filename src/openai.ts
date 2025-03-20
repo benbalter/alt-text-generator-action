@@ -25,7 +25,7 @@ export async function generateAltText(base64data: string) {
             type: "image_url",
             image_url: {
               url: base64data,
-              details: "high",
+              detail: "high",
             },
           },
         ],
