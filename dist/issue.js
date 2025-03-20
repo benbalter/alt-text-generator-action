@@ -32,15 +32,11 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Issue = exports.octokit = exports.token = void 0;
 const github = __importStar(require("@actions/github"));
 const core = __importStar(require("@actions/core"));
 const openai_1 = require("./openai");
-const image_type_1 = __importDefault(require("image-type"));
 exports.token = core.getInput("GITHUB_TOKEN", { required: true });
 exports.octokit = github.getOctokit(exports.token);
 const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
@@ -62,32 +58,13 @@ class Issue {
         }
         core.debug(`Matches: ${JSON.stringify(matches)}`);
         const images = Array.from(matches).map((match) => {
-            core.info(`Match: ${JSON.stringify(match)}`);
+            core.debug(`Match: ${JSON.stringify(match)}`);
             const altText = match[1];
             const url = match[2];
             return { url, altText };
         });
-        core.info(`Found images: ${JSON.stringify(images)}`);
+        core.debug(`Found images: ${JSON.stringify(images)}`);
         return images;
-    }
-    async imageBase64(url) {
-        const response = await fetch(url);
-        if (!response.ok) {
-            core.error(`Failed to fetch image from ${url}. Status: ${response.status}`);
-            return;
-        }
-        const buffer = Buffer.from(await response.arrayBuffer());
-        if (buffer.length === 0) {
-            core.error(`Fetched data from ${url} is empty.`);
-            return;
-        }
-        const type = await (0, image_type_1.default)(buffer);
-        if (!type) {
-            core.error(`Could not determine image type of ${url}.`);
-            return;
-        }
-        const base64 = buffer.toString("base64");
-        return `data:${type.mime};base64,${base64}`;
     }
     async updateBody() {
         if (!this.data || !this.data.body) {
@@ -109,11 +86,7 @@ class Issue {
         }
         for (const image of images) {
             core.info(`Processing image: ${image.url}`);
-            const base64data = await this.imageBase64(image.url);
-            if (!base64data) {
-                continue;
-            }
-            const altText = await (0, openai_1.generateAltText)(base64data);
+            const altText = await (0, openai_1.generateAltText)(image.url, this.data);
             if (!altText) {
                 core.error("No alt text generated.");
                 continue;

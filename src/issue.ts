@@ -3,7 +3,6 @@ import { WebhookPayload } from "@actions/github/lib/interfaces";
 import * as core from "@actions/core";
 import { generateAltText } from "./openai";
 import { Context } from "@actions/github/lib/context";
-import imageType from "image-type";
 
 export const token = core.getInput("GITHUB_TOKEN", { required: true });
 export const octokit = github.getOctokit(token);
@@ -34,41 +33,15 @@ export class Issue {
     core.debug(`Matches: ${JSON.stringify(matches)}`);
 
     const images = Array.from(matches).map((match) => {
-      core.info(`Match: ${JSON.stringify(match)}`);
+      core.debug(`Match: ${JSON.stringify(match)}`);
       const altText = match[1];
       const url = match[2];
       return { url, altText };
     });
 
-    core.info(`Found images: ${JSON.stringify(images)}`);
+    core.debug(`Found images: ${JSON.stringify(images)}`);
 
     return images;
-  }
-
-  async imageBase64(url: string) {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      core.error(`Failed to fetch image from ${url}. Status: ${response.status}`);
-      return;
-    }
-
-    const buffer = Buffer.from(await response.arrayBuffer());
-
-    if (buffer.length === 0) {
-      core.error(`Fetched data from ${url} is empty.`);
-      return;
-    }
-
-    const type = await imageType(buffer);
-
-    if (!type) {
-      core.error(`Could not determine image type of ${url}.`);
-      return;
-    }
-
-    const base64 = buffer.toString("base64");
-    return `data:${type.mime};base64,${base64}`;
   }
 
   async updateBody() {
@@ -96,13 +69,7 @@ export class Issue {
 
     for (const image of images) {
       core.info(`Processing image: ${image.url}`);
-      const base64data = await this.imageBase64(image.url);
-
-      if (!base64data) {
-        continue;
-      }
-
-      const altText = await generateAltText(base64data);
+      const altText = await generateAltText(image.url, this.data);
 
       if (!altText) {
         core.error("No alt text generated.");
