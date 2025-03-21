@@ -10,7 +10,7 @@ The description should be at least 50 words long and should include details abou
 Reply only with the alt text.
 `;
 
-const token = core.getInput("GITHUB_TOKEN", { required: true });
+const token = core.getInput("SCOPELESS_PAT", { required: true });
 
 const client = new OpenAI({
   baseURL: "https://models.inference.ai.azure.com",
@@ -53,7 +53,7 @@ export async function generateAltText(
     core.error(`Failed to convert image at ${url} to base64.`);
     return;
   }
-  
+
   const response = await client.chat.completions.create({
     messages: [
       { role: "system", content: systemPrompt },

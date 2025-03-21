@@ -46,7 +46,7 @@ The description should be in English and should be suitable for visually impaire
 The description should be at least 50 words long and should include details about the content of the image, the colors, the emotions, and any other relevant information.
 Reply only with the alt text.
 `;
-const token = core.getInput("GITHUB_TOKEN", { required: true });
+const token = core.getInput("SCOPELESS_PAT", { required: true });
 const client = new openai_1.default({
     baseURL: "https://models.inference.ai.azure.com",
     apiKey: token,

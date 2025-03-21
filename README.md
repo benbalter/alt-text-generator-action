@@ -13,7 +13,6 @@ on:
 permissions:
   issues: write
   contents: read
-  models: read
 
 jobs:
   Alt-Text:
@@ -22,5 +21,6 @@ jobs:
       - name: Add Alt Text
         uses: benbalter/alt-text-generator-action@main
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SCOPELESS_PAT: ${{ secrets.GITHUB_TOKEN }}
 ```
