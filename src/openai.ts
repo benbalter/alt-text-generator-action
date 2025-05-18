@@ -13,7 +13,7 @@ Reply only with the alt text.
 const token = core.getInput("GITHUB_TOKEN", { required: true });
 
 const client = new OpenAI({
-  baseURL: "https://models.github.ai",
+  baseURL: "https://models.github.ai/inference",
   apiKey: token,
 });
 
