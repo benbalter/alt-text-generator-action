@@ -48,7 +48,7 @@ Reply only with the alt text.
 `;
 const token = core.getInput("GITHUB_TOKEN", { required: true });
 const client = new openai_1.default({
-    baseURL: "https://models.github.ai",
+    baseURL: "https://models.github.ai/inference",
     apiKey: token,
 });
 async function imageBase64(url) {
@@ -82,10 +82,6 @@ async function generateAltText(url, issue) {
             { role: "user", content: JSON.stringify(issue) },
             {
                 role: "user",
-                content: `Please generate alt text for the image at ${url}`,
-            },
-            {
-                role: "user",
                 content: [
                     {
                         type: "image_url",
@@ -97,7 +93,7 @@ async function generateAltText(url, issue) {
                 ],
             },
         ],
-        model: "gpt-4o",
+        model: "openai/gpt-4.1",
     });
     const altText = response.choices[0].message.content;
     core.info(`Generated alt text: ${altText}`);
