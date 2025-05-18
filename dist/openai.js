@@ -43,12 +43,12 @@ const image_type_1 = __importDefault(require("image-type"));
 const systemPrompt = `You are an AI that generates alt text for images referenced in GitHub Issues. 
 You will be given a base64 encoded image, along with JSON-formatted issue metadata and you will generate a detailed description of the image. 
 The description should be in English and should be suitable for visually impaired users. 
-The description should be at least 50 words long and should include details about the content of the image, the colors, the emotions, and any other relevant information.
+The description should be around 150 characters long and should include details about the content of the image, the colors, the emotions, and any other relevant information.
 Reply only with the alt text.
 `;
-const token = core.getInput("SCOPELESS_PAT", { required: true });
+const token = core.getInput("GITHUB_TOKEN", { required: true });
 const client = new openai_1.default({
-    baseURL: "https://models.inference.ai.azure.com",
+    baseURL: "https://models.github.ai",
     apiKey: token,
 });
 async function imageBase64(url) {
