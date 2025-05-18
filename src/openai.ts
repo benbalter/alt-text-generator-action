@@ -60,10 +60,6 @@ export async function generateAltText(
       { role: "user", content: JSON.stringify(issue) },
       {
         role: "user",
-        content: `Please generate alt text for the image at ${url}`,
-      },
-      {
-        role: "user",
         content: [
           {
             type: "image_url",
