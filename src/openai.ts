@@ -71,7 +71,7 @@ export async function generateAltText(
         ],
       },
     ],
-    model: "gpt-4o",
+    model: "openai/gpt-4.1",
   });
 
   const altText = response.choices[0].message.content;
