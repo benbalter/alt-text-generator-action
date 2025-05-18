@@ -10,10 +10,10 @@ The description should be around 150 characters long and should include details 
 Reply only with the alt text.
 `;
 
-const token = core.getInput("SCOPELESS_PAT", { required: true });
+const token = core.getInput("GITHUB_TOKEN", { required: true });
 
 const client = new OpenAI({
-  baseURL: "https://models.inference.ai.azure.com",
+  baseURL: "https://models.github.ai",
   apiKey: token,
 });
 

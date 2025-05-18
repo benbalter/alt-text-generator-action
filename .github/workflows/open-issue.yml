@@ -16,4 +16,3 @@ jobs:
         uses: benbalter/alt-text-generator-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          scopeless_pat: ${{ secrets.GITHUB_TOKEN }}
