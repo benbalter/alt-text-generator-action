@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@actions/core": "^3.0.0",
-    "@actions/github": "^6.0.1",
+    "@actions/github": "^9.0.0",
     "@types/node": "^22.15.18",
     "dotenv": "^16.5.0",
     "image-type": "^5.2.0",
